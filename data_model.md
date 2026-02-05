@@ -1,10 +1,19 @@
 # data model
 
 ## big game!
-- small game
+- boards: board[9]
+- current_player: player
+- active_board: index 0–8 | null
+- winner: Player | draw | null
 
-## small game!
-- box
+## board!
+- cells: cell[9]
+- winner: Player | draw | null
+- is_full: boolean
 
-## box!
-- X, O, or nothing
+## cell!
+- value: X | O | null
+
+## player!
+- X
+- O
