@@ -1,19 +1,56 @@
 from django.db import models
 
-# Create your models here.
-class State(models.Model):
-    [Win, In progress, Tie]
+GAME_STATUS = (
+    ('Not started', 'not started'),
+    ('In Progress', 'in progress'),
+    ('Finished', 'finished'),
+)
 
-class Piece(models.Model):
-    piece = [X, O, NULL]
+PIECES = (
+    ("x", "player 1"),
+    ("o", "player 2"),
+    ("empty", "non played")
+)
 
 class Box(models.Model):
     board = models.ForeignKey("Board", on_delete=models.PROTECT)
-    piece = models.ForeignKey("Piece", on_delete=models.PROTECT)
+    piece = models.CharField(
+        max_length=255,
+        choices=PIECES,
+        blank=False,
+        default='empty',
+        help_text='Pieces per box'
+    )
+    position = models.IntegerField(choices=[(i, str(i)) for i in range(1, 10)], default=1)
 
 class Board(models.Model):
     game = models.ForeignKey("Game", on_delete=models.RESTRICT)
+    position = models.IntegerField(choices=[(i, str(i)) for i in range(1, 10)], default=1)
+    status = models.CharField(
+        max_length=255,
+        choices=GAME_STATUS,
+        blank=False,
+        default='n',
+        help_text='Game Status',
+    )
+    
 
 class Game(models.Model):
-    state = models.ForeignKey("State", on_delete=models.PROTECT)
-    winner = models.ForeignKey("Piece", on_delete=models.PROTECT)
+    winner = models.CharField(
+        max_length=5,
+        choices=PIECES,
+        blank=False,
+        default='empty',
+        help_text='Winner of the game'
+    )
+
+    status = models.CharField(
+        max_length=255,
+        choices=GAME_STATUS,
+        blank=False,
+        default='Not started',
+        help_text='Game Status',
+    )
+    
+    def __str__(self):
+        return f"{self.id}: {self.status}"
