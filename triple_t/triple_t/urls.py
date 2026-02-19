@@ -23,4 +23,4 @@ urlpatterns = [
     path('admin/', admin.site.urls),
     path('api/', api.urls),
     path('', include('triple_t_app.urls')),
-] + static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
+]
