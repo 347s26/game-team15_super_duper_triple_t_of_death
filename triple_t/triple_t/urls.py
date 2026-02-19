@@ -15,8 +15,12 @@ Including another URLconf
     2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
 """
 from django.contrib import admin
-from django.urls import path
+from django.urls import path, include
+from triple_t_app.api import api
+from django.conf.urls.static import static
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-]
+    path('api/', api.urls),
+    path('', include('triple_t_app.urls')),
+] + static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
