@@ -1,11 +1,22 @@
-from ninja import NinjaAPI, Schema
-from django.shortcuts import render
+# ninja imports
+from ninja import NinjaAPI, ModelSchema
+from ninja.pagination import paginate, PageNumberPagination
+
+# django imports
+from django.shortcuts import get_object_or_404
+
+# local imports
 from .models import Game, Board, Box
 
 api = NinjaAPI()
 
+class GameSchema(ModelSchema):
+    class Meta:
+        model = Game
+        fields = "__all__"
+
 # Create your views here.
-@api.post("/create")
+@api.post("game/")
 def create_game(request):
     game_obj = Game.objects.create()
 
@@ -17,12 +28,25 @@ def create_game(request):
         curr_board.save()
     game_obj.save()
 
-    return {"message": "Game created"}
+    return 200, {"message": f"Game #{game_obj.id} created."}
+
+@api.get("game/", response=list[GameSchema])
+@paginate(PageNumberPagination)
+def get_games(request):
+    return Game.objects.all()
 
 
-@api.get("/game/{game_id}")
-def game_view(request, game_id):
-    return {"game_id": game_id}
+@api.delete("game/{id}")
+def delete_game(request, id):
+    game_obj = get_object_or_404(Game, id=id)
+    game_obj.delete()
+    return 200, {"message": "Game deleted."}
+
+
+
+@api.get("game/{id}")
+def game_view(request, id):
+    return {"game_id": id}
 
 #def check_win(request, game_id):
 #  winning_combinations = [ [0, 1, 2], [3, 4, 5], [6, 7, 8], [0, 3, 6], [1, 4, 7], [2, 5, 8], [0, 4, 8], [2, 4, 6] ]
