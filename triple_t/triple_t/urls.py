@@ -23,4 +23,5 @@ urlpatterns = [
     path('admin/', admin.site.urls),
     path('api/', api.urls),
     path('', include('triple_t_app.urls')),
+    path('accounts/', include('django.contrib.auth.urls')), 
 ]
